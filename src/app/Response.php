@@ -6,9 +6,9 @@ use Blog\src\app\interfaces\ResponseInterface;
 
 class Response implements ResponseInterface
 {
-    private int $code;
-    private string $message;
-    private array $headers = [];
+    protected int $code;
+    protected string $message;
+    protected array $headers = [];
 
 
     public function setCode(int $code = 200): self
@@ -28,9 +28,11 @@ class Response implements ResponseInterface
     }
     public function send()
     {
-        http_response_code($this->code);
-        foreach ($this->headers as $key => $value) {
-            header("$key: $value");
+        if (!headers_sent()) {
+            @http_response_code($this->code);
+            foreach ($this->headers as $key => $value) {
+                @header("$key: $value");
+            }
         }
         echo $this->message;
     }
