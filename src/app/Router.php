@@ -2,10 +2,10 @@
 
 namespace Blog\src\app;
 
-use Blog\src\app\factory\RequestFactory;
-use Blog\src\app\factory\ResponseFactory;
-use Blog\src\app\interfaces\RequestInterface as Request;
 use Blog\src\app\interfaces\ResponseInterface as Response;
+use Blog\src\app\interfaces\RequestInterface as Request;
+use Blog\src\app\factory\ResponseFactory;
+use Blog\src\app\factory\RequestFactory;
 
 class Router
 {
@@ -62,7 +62,7 @@ class Router
             $this->executeHandler($handler, $request, $response);
             return; //prevent bottleneck checking routes;
         } else {
-            $response->setCode(404)->setMessage("Not found")->send(); //404;
+            $response->setCode(404)->setMessage("Not found")->send(); 
         }
     }
 }
