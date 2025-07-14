@@ -60,3 +60,15 @@
 ├── schema.sql # database schema + seeds
 ├── composer.json # PSR-4 autoload config
 └── README.md
+
+## Testing
+This repository uses PHPUnit to test the router dispatch logic.
+Install dependencies with `composer install` and run the suite using:
+
+```
+./vendor/bin/phpunit
+```
+
+The tests rely on a `TestResponse` helper and the ability to substitute
+`ResponseFactory`'s created class to capture status codes and messages
+without sending real HTTP headers.
