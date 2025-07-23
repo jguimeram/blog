@@ -55,10 +55,12 @@ class Router
         $request = RequestFactory::create();
 
         $response = ResponseFactory::create();
+        $method = $request->getMethod();
+        $path = $request->getPath();
 
 
-        if (isset($this->routes[$request->getMethod()][$request->getPath()])) {
-            $handler = $this->routes[$request->getMethod()][$request->getPath()];
+        if (isset($this->routes[$method][$path])) {
+            $handler = $this->routes[$method][$path];
             $this->executeHandler($handler, $request, $response);
             return; //prevent bottleneck checking routes;
         } else {

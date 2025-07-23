@@ -10,6 +10,9 @@
   "scripts": {
     "dev": "php -S localhost:3000 -t public"
   },
+  "config": {
+    "process-timeout": 0
+  },
   "autoload": {
     "psr-4": {
       "Blog\\": "./"
