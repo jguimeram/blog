@@ -43,7 +43,17 @@ class Router
         try {
             //code...
             $result = call_user_func($handler, $request, $response);
-            if ($result instanceof Response) $result->send();
+            if ($result instanceof Response) {
+                $result->send();
+            } elseif (is_string($result)) {
+                $response->text($result)->send();
+            } else if (is_array($result)) {
+                $response->json($result)->send();
+            } else if ($result === null) {
+                $response->setCode(204)->send(); // No Content
+            } else {
+                throw new \Exception('Invalid response type');
+            }
         } catch (\Throwable $th) {
             //throw $th;
             $response->setCode(500)->setMessage("Internal Server Error")->send(); //500;
@@ -58,13 +68,24 @@ class Router
         $method = $request->getMethod();
         $path = $request->getPath();
 
+        //regex
+
+        print_r($path);
+
+
+
+
+        //
+
+
+
 
         if (isset($this->routes[$method][$path])) {
             $handler = $this->routes[$method][$path];
             $this->executeHandler($handler, $request, $response);
             return; //prevent bottleneck checking routes;
         } else {
-            $response->setCode(404)->setMessage("Not found")->send(); 
+            $response->setCode(404)->setMessage("Not found")->send();
         }
     }
 }
