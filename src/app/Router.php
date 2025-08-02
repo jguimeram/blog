@@ -14,7 +14,7 @@ class Router
     private object $request;
     private object $response;
     private string $method;
-    private string $path = "";
+
 
     public function get(string $path, callable $handler)
     {
@@ -39,8 +39,15 @@ class Router
 
     private function addRoute(string $method, string $path, callable $handler)
     {
-        $this->path = $path;
-        $this->routes[$method][$this->path] = $handler;
+
+
+        $this->routes[$method][$path] = $handler;
+
+        // Store the original path pattern to match against later
+        /*  $this->routes[$method][$path] = [
+            'pattern' => $path,
+            'handler' => $handler
+        ]; */
     }
 
     private function executeHandler(callable $handler, Request $request, Response $response)
@@ -68,51 +75,21 @@ class Router
     public function dispatch()
     {
         $this->request = RequestFactory::create();
-
         $this->response = ResponseFactory::create();
         $this->method = $this->request->getMethod();
-        $url = $this->request->getPath(); //client path
+        $url = $this->request->getPath();
 
+        // Check if we have any routes for this method
 
         foreach ($this->routes[$this->method] ?? [] as $route => $callback) {
-
-            //rewrite {id} to a regex
-            $pattern = '#^' . preg_replace('/\{(\w+)\}/', '(?P<$1>\d+)', $route) . '$#';
-
-            //match the regex and returns an array of matches
-            if (preg_match_all($pattern, $url, $matches)) {
-                $handler = $this->routes[$this->method][$this->path];
-                $this->executeHandler($handler, $this->request, $this->response);
+            $pattern = '#^' . preg_replace('/\{(\w+)\}/', '(?P<$1>[^/]+)', $route) . '$#';
+            if (preg_match($pattern, $url, $matches)) {
+                $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                $this->request->setParams($params);
+                $this->executeHandler($callback, $this->request, $this->response);
                 return;
-            } else {
-                $this->response->setCode(404)->setMessage("Not found")->send();
             }
         }
-
-
-        ############
-
-        /*         if (isset($this->routes[$method][$path])) {
-
-            foreach ($this->routes[$method] ?? [] as $url => $callback) {
-
-                $pattern = '#^' . preg_replace('/\{(\w+)\}/', '(?P<$1>\d+)', $url) . '$#';
-                if (preg_match_all($pattern, $path, $matches)) {
-                    print_r($matches);
-                    $handler = $this->routes[$method][$path];
-                    $this->executeHandler($handler, $request, $response);
-                    return; //prevent bottleneck checking routes;
-                }
-            }
-        } else {
-            $response->setCode(404)->setMessage("Not found")->send();
-        } */
-
-        ########################
-
-
-
-
-
+        $this->response->setCode(404)->setMessage('Not Found')->send();
     }
 }

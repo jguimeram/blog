@@ -20,7 +20,7 @@ $router->get('/users', function (Request $request, Response $response) {
 });
 
 $router->get('/users/{id}', function (Request $request, Response $response) {
-    return  'from users id' . PHP_EOL;
+    //return  'from users id' . PHP_EOL;
 });
 
 
