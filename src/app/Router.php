@@ -57,12 +57,12 @@ class Router
             $result = call_user_func($handler, $request, $response);
             if ($result instanceof Response) {
                 $result->send();
-            } elseif (is_string($result)) {
+            } elseif (is_string($result)) {;
                 $response->text($result)->send();
             } else if (is_array($result)) {
                 $response->json($result)->send();
             } else if ($result === null) {
-                $response->setCode(204)->send(); // No Content
+                $response->setCode(200)->json([])->send(); // More aproppiate than 204
             } else {
                 throw new \Exception('Invalid response type');
             }
@@ -83,6 +83,7 @@ class Router
 
         foreach ($this->routes[$this->method] ?? [] as $route => $callback) {
             $pattern = '#^' . preg_replace('/\{(\w+)\}/', '(?P<$1>[^/]+)', $route) . '$#';
+
             if (preg_match($pattern, $url, $matches)) {
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                 $this->request->setParams($params);
@@ -90,6 +91,6 @@ class Router
                 return;
             }
         }
-        $this->response->setCode(404)->setMessage('Not Found')->send();
+        $this->response->setCode(404)->setMessage('404 - Not Found')->send();
     }
 }

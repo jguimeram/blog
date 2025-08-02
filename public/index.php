@@ -14,13 +14,16 @@ $router->get('/', function (Request $request, Response $response) {
     return  'from root' . PHP_EOL;
 });
 
+$router->get('/about', function (Request $request, Response $response) {
+    // return  'from about' . PHP_EOL;
+});
 
 $router->get('/users', function (Request $request, Response $response) {
     return  'from users' . PHP_EOL;
 });
 
 $router->get('/users/{id}', function (Request $request, Response $response) {
-    //return  'from users id' . PHP_EOL;
+    return  'from users id' . PHP_EOL;
 });
 
 

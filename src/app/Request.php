@@ -12,6 +12,7 @@ class Request implements RequestInterface
 
     private function normalizePath(string $path): string
     {
+        if ($path === "/") return $path;
         $trimmed = rtrim($path, "/");  // Remove trailing slashes
         $parsed = parse_url($trimmed, PHP_URL_PATH);  // Extract path component
         return strtolower($parsed);  // Ensure case consistency
