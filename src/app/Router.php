@@ -39,15 +39,7 @@ class Router
 
     private function addRoute(string $method, string $path, callable $handler)
     {
-
-
         $this->routes[$method][$path] = $handler;
-
-        // Store the original path pattern to match against later
-        /*  $this->routes[$method][$path] = [
-            'pattern' => $path,
-            'handler' => $handler
-        ]; */
     }
 
     private function executeHandler(callable $handler, Request $request, Response $response)
@@ -62,7 +54,7 @@ class Router
             } else if (is_array($result)) {
                 $response->json($result)->send();
             } else if ($result === null) {
-                $response->setCode(200)->json([])->send(); // More aproppiate than 204
+                $response->send(); // More aproppiate than 204 (sends 200 by default)
             } else {
                 throw new \Exception('Invalid response type');
             }

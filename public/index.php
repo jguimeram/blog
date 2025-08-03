@@ -15,7 +15,7 @@ $router->get('/', function (Request $request, Response $response) {
 });
 
 $router->get('/about', function (Request $request, Response $response) {
-    // return  'from about' . PHP_EOL;
+    //  return  'from about' . PHP_EOL;
 });
 
 $router->get('/users', function (Request $request, Response $response) {
@@ -23,7 +23,9 @@ $router->get('/users', function (Request $request, Response $response) {
 });
 
 $router->get('/users/{id}', function (Request $request, Response $response) {
-    return  'from users id' . PHP_EOL;
+    $params = $request->getParams();
+    debug($params);
+    return $params['id'];
 });
 
 
